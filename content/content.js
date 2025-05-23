@@ -1,22 +1,23 @@
 // Main class to handle the comment search functionality
 class YouTubeCommentSearch {
     constructor() {
-        console.log('YouTube Comment Search & Filter: Extension initialized');
+        //console.log('YouTube Comment Search & Filter: Extension initialized');
         this.searchContainer = null;
         this.searchInput = null;
         this.commentSection = null;
         this.noResultsMessage = null;
         this.currentQuery = '';
         this.originalComments = new Map(); // Store original comment states
+        this.searchTimeout = null; // For debouncing
         this.observeComments();
         this.init();
     }
 
     init() {
-        console.log('YouTube Comment Search & Filter: Waiting for comments section...');
+        //console.log('YouTube Comment Search & Filter: Waiting for comments section...');
         // Wait for comments section to load
         this.waitForComments().then(() => {
-            console.log('YouTube Comment Search & Filter: Comments section found, injecting UI...');
+            //console.log('YouTube Comment Search & Filter: Comments section found, injecting UI...');
             this.injectSearchUI();
             this.setupEventListeners();
         });
@@ -25,17 +26,17 @@ class YouTubeCommentSearch {
     waitForComments() {
         return new Promise(resolve => {
             const checkComments = () => {
-                console.log('Attempting to find comments section...');
+               // console.log('Attempting to find comments section...');
                 // Updated selector to match YouTube's structure
                 const commentsSection = document.querySelector('ytd-comments#comments');
                 const commentsList = commentsSection?.querySelector('ytd-item-section-renderer');
                 
                 if (commentsSection && commentsList) {
-                    console.log('Comments section found:', commentsSection);
+                    //console.log('Comments section found:', commentsSection);
                     this.commentSection = commentsSection;
                     resolve();
                 } else {
-                    console.log('Comments section not found, retrying in 1s...');
+                   // console.log('Comments section not found, retrying in 1s...');
                     setTimeout(checkComments, 1000);
                 }
             };
@@ -44,7 +45,7 @@ class YouTubeCommentSearch {
     }
 
     injectSearchUI() {
-        console.log('YouTube Comment Search & Filter: Attempting to inject search UI');
+       // console.log('YouTube Comment Search & Filter: Attempting to inject search UI');
         
         if (!this.commentSection) {
             console.error('Cannot inject UI: Comments section not found');
@@ -56,38 +57,24 @@ class YouTubeCommentSearch {
         this.searchContainer = document.createElement('div');
         this.searchContainer.className = 'yt-comment-search-container';
         
-        // Create search input wrapper for input and button
-        const searchWrapper = document.createElement('div');
-        searchWrapper.className = 'yt-comment-search-wrapper';
+        // Create search form
+        const searchForm = document.createElement('div');
+        searchForm.className = 'yt-comment-search-form';
         
         // Create search input
         this.searchInput = document.createElement('input');
         this.searchInput.type = 'text';
         this.searchInput.placeholder = 'Search comments...';
         this.searchInput.className = 'yt-comment-search-input';
-
-        // Create search button
-        const searchButton = document.createElement('button');
-        searchButton.className = 'yt-comment-search-button';
-        searchButton.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false">
-                <path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"></path>
-            </svg>
-        `;
         
         // Create results counter
         this.resultsCounter = document.createElement('div');
         this.resultsCounter.className = 'yt-comment-results-counter';
         this.resultsCounter.style.display = 'none';
         
-        // Add input and button to wrapper
-        searchWrapper.appendChild(this.searchInput);
-        searchWrapper.appendChild(searchButton);
+        // Add input to form
+        searchForm.appendChild(this.searchInput);
 
-        // Create filter container
-        const filterContainer = document.createElement('div');
-        filterContainer.className = 'yt-comment-filter-container';
-        
         // Create "No results" message
         this.noResultsMessage = document.createElement('div');
         this.noResultsMessage.className = 'yt-comment-no-results';
@@ -100,43 +87,56 @@ class YouTubeCommentSearch {
         this.errorMessage.style.display = 'none';
         
         // Add elements to the page
-        this.searchContainer.appendChild(searchWrapper);
-        this.searchContainer.appendChild(this.resultsCounter);  // Add counter after search wrapper
-        this.searchContainer.appendChild(filterContainer);
+        this.searchContainer.appendChild(searchForm);
+        this.searchContainer.appendChild(this.resultsCounter);
         this.searchContainer.appendChild(this.noResultsMessage);
         this.searchContainer.appendChild(this.errorMessage);
         
         // Find the comments section header
         const header = this.commentSection.querySelector('ytd-comments-header-renderer');
         if (header) {
-            console.log('YouTube Comment Search & Filter: Found comments header, injecting UI');
+           // console.log('YouTube Comment Search & Filter: Found comments header, injecting UI');
             header.parentNode.insertBefore(this.searchContainer, header.nextSibling);
-            console.log('YouTube Comment Search & Filter: Search UI successfully injected');
+           // console.log('YouTube Comment Search & Filter: Search UI successfully injected');
         } else {
-            console.log('YouTube Comment Search & Filter: No header found, using fallback injection');
+           // console.log('YouTube Comment Search & Filter: No header found, using fallback injection');
             this.commentSection.insertBefore(this.searchContainer, this.commentSection.firstChild);
-            console.log('YouTube Comment Search & Filter: Search UI injected using fallback method');
+           // console.log('YouTube Comment Search & Filter: Search UI injected using fallback method');
         }
     }
 
     setupEventListeners() {
-        // Search on button click
-        const searchButton = this.searchContainer.querySelector('.yt-comment-search-button');
-        searchButton.addEventListener('click', () => {
-            this.filterComments(this.searchInput.value);
+        // Real-time search with debouncing
+        this.searchInput.addEventListener('input', (e) => {
+            // Clear previous timeout
+            if (this.searchTimeout) {
+                clearTimeout(this.searchTimeout);
+            }
+            
+            // Set new timeout for debounced search
+            this.searchTimeout = setTimeout(() => {
+                const query = e.target.value.trim();
+                if (query) {
+                    this.filterComments(query);
+                } else {
+                    this.resetHighlighting();
+                }
+            }, 300); // 300ms delay
         });
 
-        // Search on Enter key press
+        // Also handle Enter key for immediate search
         this.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                this.filterComments(this.searchInput.value);
-            }
-        });
-
-        // Clear results when input is empty
-        this.searchInput.addEventListener('input', (e) => {
-            if (!e.target.value.trim()) {
-                this.resetHighlighting();
+                // Clear timeout and search immediately
+                if (this.searchTimeout) {
+                    clearTimeout(this.searchTimeout);
+                }
+                const query = e.target.value.trim();
+                if (query) {
+                    this.filterComments(query);
+                } else {
+                    this.resetHighlighting();
+                }
             }
         });
     }
@@ -152,7 +152,7 @@ class YouTubeCommentSearch {
             );
 
             if (hasNewComments && this.currentQuery) {
-                console.log('New comments detected, updating filter');
+              //  console.log('New comments detected, updating filter');
                 this.filterComments(this.currentQuery);
             }
             insertSearchForm();
@@ -162,7 +162,7 @@ class YouTubeCommentSearch {
         const startObserving = () => {
             const commentsSection = document.querySelector('ytd-comments#comments ytd-item-section-renderer #contents');
             if (commentsSection) {
-                console.log('Setting up comment section observer');
+              //  console.log('Setting up comment section observer');
                 observer.observe(commentsSection, {
                     childList: true,
                     subtree: false // Only watch for direct children
@@ -181,7 +181,7 @@ class YouTubeCommentSearch {
             return;
         }
 
-        console.log('Starting comment filtering with query:', query);
+        //console.log('Starting comment filtering with query:', query);
         this.currentQuery = query.trim().toLowerCase();
         
         if (!this.commentSection) {
@@ -270,13 +270,13 @@ class YouTubeCommentSearch {
             this.resultsCounter.style.display = 'none';
         }
         
-        console.log('Filter complete:', {
-            totalThreads: commentThreads.length,
-            totalComments,
-            matchedComments,
-            matchFound,
-            hiddenRepliesCount
-        });
+    //    console.log('Filter complete:', {
+    //         totalThreads: commentThreads.length,
+    //         totalComments,
+    //         matchedComments,
+    //         matchFound,
+    //         hiddenRepliesCount
+    //     });
     }
 
     doesCommentMatch(commentElement, query) {
@@ -287,7 +287,7 @@ class YouTubeCommentSearch {
         const authorElement = commentElement.querySelector('#author-text');
         
         if (!commentText) {
-            console.log('Comment text element not found');
+           // console.log('Comment text element not found');
             return false;
         }
 
@@ -315,7 +315,7 @@ class YouTubeCommentSearch {
     }
 
     resetHighlighting() {
-        console.log('Resetting comment visibility and highlighting');
+      //  console.log('Resetting comment visibility and highlighting');
         // Updated selector to use ytd-comment-view-model
         const comments = this.commentSection.querySelectorAll('ytd-comment-thread-renderer, ytd-comment-view-model');
         
@@ -354,42 +354,34 @@ function createSearchForm() {
     const form = document.createElement('form');
     form.className = 'yt-comment-search-form';
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'yt-comment-search-wrapper';
-
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'yt-comment-search-input';
     input.placeholder = 'Search comments...';
 
-    const searchButton = document.createElement('button');
-    searchButton.type = 'button';
-    searchButton.className = 'yt-comment-search-button';
-    searchButton.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" focusable="false">
-            <path d="M20.87 20.17l-5.59-5.59C16.35 13.35 17 11.75 17 10c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.75 0 3.35-.65 4.58-1.71l5.59 5.59.7-.71zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"></path>
-        </svg>
-    `;
-
-    wrapper.appendChild(input);
-    wrapper.appendChild(searchButton);
-    form.appendChild(wrapper);
+    form.appendChild(input);
     container.appendChild(form);
 
-    // Add event listeners
+    // Add event listeners for real-time search
+    let searchTimeout;
+    
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        if (searchTimeout) clearTimeout(searchTimeout);
         searchComments(input.value);
     });
 
-    searchButton.addEventListener('click', () => {
-        searchComments(input.value);
-    });
-
-    input.addEventListener('input', () => {
-        if (!input.value.trim()) {
-            searchComments('');
-        }
+    input.addEventListener('input', (e) => {
+        if (searchTimeout) clearTimeout(searchTimeout);
+        
+        searchTimeout = setTimeout(() => {
+            const query = e.target.value.trim();
+            if (query) {
+                searchComments(query);
+            } else {
+                searchComments('');
+            }
+        }, 300);
     });
 
     return container;

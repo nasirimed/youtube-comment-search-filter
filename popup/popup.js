@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Chrome Web Store URL - replace with your actual extension URL
-    const CHROME_STORE_URL = 'https://chrome.google.com/webstore/detail/your-extension-id';
+    const CHROME_STORE_URL = 'https://chrome.google.com/webstore/detail/bmmgpdofikmglfgcgnhpmpbekankhfim';
     
     // Get DOM elements
     const rateBtn = document.getElementById('rateBtn');
