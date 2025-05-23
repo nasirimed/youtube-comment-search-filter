@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Comment Search & Filter</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <div class="header">
+            <div class="icon">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none">
+                    <defs>
+                        <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="11" cy="11" r="8" stroke="url(#iconGradient)" stroke-width="2"/>
+                    <path d="m21 21-4.35-4.35" stroke="url(#iconGradient)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="8" cy="8" r="1" fill="url(#iconGradient)" opacity="0.6"/>
+                </svg>
+            </div>
+            <div class="title">
+                <h1>Comment Search</h1>
+                <p>for YouTube</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <p class="description">
+                Search and filter YouTube comments easily. Find specific comments, authors, or topics instantly.
+            </p>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+                            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                            <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span>Search by text or author</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+                            <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <span>Highlight matches</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="rateBtn" class="btn btn-primary">
+                <div class="btn-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                Rate on Chrome Store
+            </button>
+        </div>
+
+        <div class="footer">
+            <p>Version 1.0.0</p>
+            <p class="status" id="status">Ready to search comments!</p>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html> 

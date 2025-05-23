@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Comment Search & Filter",
+  "version": "1.0.0",
+  "description": "Search and filter YouTube comments with ease. Find specific comments, authors, or topics instantly.",
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "YouTube Comment Search & Filter",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/watch*"],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://www.youtube.com/*"
+  ]
+} 

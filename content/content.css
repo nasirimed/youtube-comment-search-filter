@@ -1,0 +1,174 @@
+.yt-comment-search-container {
+    margin: 16px 0;
+    padding: 16px 24px;
+    background: var(--yt-spec-base-background);
+    border: 1px solid var(--yt-spec-10-percent-layer);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.yt-comment-search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.yt-comment-search-wrapper {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 600px;
+    align-items: center;
+}
+
+.yt-comment-search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--yt-spec-10-percent-layer);
+    border-radius: 24px;
+    font-size: 14px;
+    background: var(--yt-spec-base-background);
+    color: var(--yt-spec-text-primary);
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.yt-comment-search-input:focus {
+    outline: none;
+    border-color: var(--yt-spec-call-to-action);
+    box-shadow: 0 0 0 3px rgba(6, 95, 212, 0.1);
+    transform: translateY(-1px);
+}
+
+.yt-comment-search-input::placeholder {
+    color: var(--yt-spec-text-secondary);
+    font-style: italic;
+}
+
+.yt-comment-search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border: none;
+    border-radius: 50%;
+    background: var(--yt-spec-call-to-action);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 48px;
+    height: 48px;
+}
+
+.yt-comment-search-button:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.yt-comment-search-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.yt-comment-search-button svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* Remove unused styles */
+.yt-comment-search-icon,
+.yt-comment-search-close {
+    display: none;
+}
+
+/* Update responsive styles */
+@media (max-width: 640px) {
+    .yt-comment-search-container {
+        padding: 12px 16px;
+        margin: 12px 0;
+    }
+    
+    .yt-comment-search-wrapper {
+        gap: 8px;
+    }
+    
+    .yt-comment-search-input {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .yt-comment-search-button {
+        min-width: 44px;
+        height: 44px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .yt-comment-search-container {
+        padding: 10px 12px;
+    }
+    
+    .yt-comment-search-input {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .yt-comment-search-button {
+        min-width: 40px;
+        height: 40px;
+        padding: 8px;
+    }
+
+    .yt-comment-search-button svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.yt-comment-filter-container {
+    display: flex;
+    gap: 8px;
+}
+
+.yt-comment-highlight {
+    background-color: rgba(255, 255, 0, 0.3);
+    border-radius: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .yt-comment-highlight {
+        background-color: rgba(255, 255, 0, 0.2);
+    }
+}
+
+.yt-comment-no-results {
+    padding: 16px;
+    text-align: center;
+    color: var(--yt-spec-text-secondary);
+    font-size: 14px;
+    background: var(--yt-spec-brand-background-solid);
+    border-radius: 8px;
+    margin: 16px 0;
+}
+
+.yt-comment-error {
+    padding: 16px;
+    text-align: center;
+    color: var(--yt-spec-text-primary);
+    font-size: 14px;
+    background: var(--yt-spec-brand-background-solid);
+    border: 1px solid var(--yt-spec-error-background);
+    border-radius: 8px;
+    margin: 16px 0;
+}
+
+.yt-comment-results-counter {
+    padding: 8px 0;
+    color: var(--yt-spec-text-secondary);
+    font-size: 14px;
+} 
